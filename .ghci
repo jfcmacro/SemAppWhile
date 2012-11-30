@@ -1,0 +1,2 @@
+:set editor emacs
+:set -isrc-haskell:dist/build/SemAppWhile/SemAppWhile-tmp

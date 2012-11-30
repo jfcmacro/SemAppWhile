@@ -1,8 +1,11 @@
 Name:                SemAppWhile
-Version:             0.1
+Version:             0.1.1
 Description:         An implementation of the Semantics from the book Semantics with Applications
 License:             GPL
 License-file:        LICENSE
+Package-url:	     git@github.com:jfcmacro/SemAppWhile.git
+Category:	     Undefined
+Synopsis:	     This is an example to implement diferents semantics by using UUAGC
 Author:              Juan Francisco Cardona Mc'Cormick
 Maintainer:          fcardona@eafit.edu.co
 Build-Type:          Simple

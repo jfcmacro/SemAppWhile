@@ -1,0 +1,5 @@
+a = a - 10;
+if a <= 100 
+then a = a + 10
+else a = a - 10;
+a = a + b
