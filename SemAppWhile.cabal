@@ -1,0 +1,17 @@
+Name:                SemAppWhile
+Version:             0.1
+Description:         An implementation of the Semantics from the book Semantics with Applications
+License:             GPL
+License-file:        LICENSE
+Author:              Juan Francisco Cardona Mc'Cormick
+Maintainer:          fcardona@eafit.edu.co
+Build-Type:          Simple
+Cabal-Version:       >=1.2
+
+Executable SemAppWhile
+  Hs-source-dirs:    src-haskell
+  Main-is:           Main.hs
+  Build-Depends:     base >= 4.1 && < 5, uu-parsinglib >= 2.7.4 
+  other-modules:     AbsData
+  x-agmodule:        file: "src-haskell/AbsData.ag" options : data, pretty, module "AbsData"
+

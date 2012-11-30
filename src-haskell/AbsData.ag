@@ -1,0 +1,29 @@
+
+DATA Stm 
+  |  Assign var:  String aexp: Aexp
+  |  Skip
+  |  SSeq   exp1: Stm    exp2: Stm
+  |  If     bexp: Bexp   then: Stm   else: Stm
+  |  While  bexp: Bexp   body: Stm
+  |  SEmpty 
+
+DERIVING Stm : Show
+
+DATA Aexp
+  |  ANum num : { Int }
+  |  AVar var : { String }
+  |  Add exp1 : Aexp exp2 : Aexp
+  |  Sub exp1 : Aexp exp2 : Aexp
+  |  Mul exp1 : Aexp exp2 : Aexp
+
+DERIVING Aexp : Show
+
+DATA Bexp
+  |  BTrue
+  |  BFalse
+  |  Eqq exp1 : Aexp exp2 : Aexp
+  |  Lqt exp1 : Aexp exp2 : Aexp
+  |  Neg bexp : Bexp
+  |  And exp1 : Bexp exp2 : Bexp
+
+DERIVING Bexp : Show
