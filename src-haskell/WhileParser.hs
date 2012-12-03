@@ -30,6 +30,7 @@ pEqual = pSym '=' `micro` 1 <* spaces
 pInt :: Parser Int
 pInt = read <$> pList1 (pRange ('0','9')) `micro` 1 <* spaces
 
+pAndSym = pSym '&' `micro` 1 <* spaces
 -- All our parsers
 
 -- Statement Parser
@@ -71,7 +72,7 @@ pAexp'' = ANum <$> pInt
 
 -- Boolean expresion parser
 pOpAnd :: Parser (Bexp -> Bexp -> Bexp)
-pOpAnd = And <$ pSym '&'
+pOpAnd = And <$ pAndSym
 
 pBexp :: Parser Bexp
 pBexp = pChainr pOpAnd pBexp'
@@ -79,7 +80,7 @@ pBexp = pChainr pOpAnd pBexp'
 pBexp' :: Parser Bexp
 pBexp' = BTrue   <$  pKey "true"
       <|> BFalse <$  pKey "false"
-      <|> Eqq    <$> pAexp <* pSym '='  <*> pAexp
+      <|> Eqq    <$> pAexp <* pEqual  <*> pAexp
       <|> Lqt    <$> pAexp <* pKey "<=" <*> pAexp
       <|> Neg    <$> (pSym '-' *> pBexp)
       <|> pParens pBexp

@@ -1,0 +1,67 @@
+imports
+{
+import BasicTypes(State, lookupState, Variables)
+import AbsData(Aexp(..), Bexp(..), Stm(..))
+import qualified Data.Set as Set
+}
+
+include "AbsData.ag"
+
+attr Aexp
+   inh state : { State }
+   syn value : { Int } 
+
+sem Aexp
+  |  ANum lhs.value = @num
+  |  AVar lhs.value = lookupState @var @lhs.state
+  |  Add  lhs.value = @exp1.value + @exp2.value
+  |  Sub  lhs.value = @exp1.value - @exp2.value
+  |  Mul  lhs.value = @exp1.value * @exp2.value
+
+attr Bexp
+   inh state : { State }
+   syn value : { Bool  }
+
+sem Bexp
+  |  BTrue  lhs.value = True
+  |  BFalse lhs.value = False
+  |  Eqq    lhs.value = @exp1.value == @exp2.value
+  |  Lqt    lhs.value = @exp1.value <= @exp2.value
+  |  Neg    lhs.value = not @bexp.value
+  |  And    lhs.value = @exp1.value && @exp2.value
+
+-- Free Variables
+
+attr Bexp
+  syn fv : { Variables }
+
+sem Bexp
+  |  BTrue  lhs.fv =  Set.empty
+  |  BFalse lhs.fv =  Set.empty
+  |  Eqq    lhs.fv = @exp1.fv `Set.union` @exp1.fv
+  |  Lqt    lhs.fv = @exp1.fv `Set.union` @exp2.fv
+  |  Neg    lhs.fv = @bexp.fv
+  |  And    lhs.fv = @exp1.fv `Set.union` @exp2.fv
+
+attr Aexp
+  syn fv : { Variables }
+
+sem Aexp
+  |  ANum lhs.fv = Set.empty
+  |  AVar lhs.fv = Set.singleton @var
+  |  Add  lhs.fv = @exp1.fv `Set.union` @exp2.fv
+  |  Sub  lhs.fv = @exp1.fv `Set.union` @exp2.fv
+  |  Mul  lhs.fv = @exp1.fv `Set.union` @exp2.fv
+
+
+attr Stm
+  inh state : { State } 
+  syn fv    : { Variables }
+
+sem Stm
+  |  Assign lhs.fv = @aexp.fv Set.\\ (Set.singleton @var)
+  |  Skip   lhs.fv = Set.empty
+  |  SSeq   lhs.fv = @exp1.fv `Set.union` @exp2.fv
+  |  If     lhs.fv = @bexp.fv `Set.union` @then.fv `Set.union` @else.fv
+  |  While  lhs.fv = @bexp.fv `Set.union` @body.fv 
+  |  SEmpty lhs.fv = Set.empty
