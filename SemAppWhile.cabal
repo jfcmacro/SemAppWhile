@@ -14,7 +14,9 @@ Cabal-Version:       >=1.2
 Executable SemAppWhile
   Hs-source-dirs:    src-haskell
   Main-is:           Main.hs
-  Build-Depends:     base >= 4.1 && < 5, uu-parsinglib >= 2.7.4 
-  other-modules:     AbsData
-  x-agmodule:        file: "src-haskell/AbsData.ag" options : data, pretty, module "AbsData"
+  Build-Depends:     base >= 4.1 && < 5, 
+                     uu-parsinglib >= 2.7.4, containers >= 0.5.0.0
+  other-modules:     AbsData, SemBasicFunctions
+  x-agmodule:        file: "src-haskell/AbsData.ag" options : data, pretty, lckeywords, module "AbsData"
+  x-agmodule:        file: "src-haskell/SemBasicFunctions.ag" options : catas, semfuns, lckeywords, signatures, wrappers, module "SemBasicFunctions"
 
