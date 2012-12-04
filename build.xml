@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="semappwhile" default="compile">
+<!-- Author: Juan Francisco Cardona McCormick
+     Date: 03.12.2012
+     -->
+  <description>
+    This is an implementation of the book Semantics with Applications:
+    An Appetizer. Hanne Riis Nielson and Flemming Nielson.
+  </description>
+
+  <property name="src"           location="src-java"/>
+  <property name="build"         location="bin"/>
+  <property name="whilePath"     value="co/edu/eafit/dis/semantics/whilelanguage"/>
+  <property name="whilePackage"  value="co.edu.eafit.dis.semantics.whilelanguage"/>
+
+  <target name="init" >
+    <tstamp/>
+    <mkdir dir="${build}"/>
+  </target>
+
+  <target name="antlr" depends="init">
+    <antlr:ant-antlr3 xmlns:antlr="antlib:org/apache/tools/ant/antlr"
+		      verbose="true"
+		      outputdirectory="${src}/${whilePath}/parser"
+		      target="${src}/grammars/WhileLanguage.g"/>
+  </target>
+
+  <target name="compile" depends="antlr"
+	  description="Compile source files">
+    <javac srcdir="${src}" destdir="${build}"/>
+  </target>
+
+  <target name="runWhile" depends="compile">
+    <echo message="*** Run While Parser ***"/>
+    <java classname="${whilePackage}/main/Main"
+          classpath="${build}">
+    </java>
+  </target>
+
+  <target name="clean"
+	  description="limpia todo">
+    <!-- Borra el árbol de directorios ${build} -->
+    <delete dir="${build}"/>
+    <delete file="${src}/${whilePath}/parser/WhileLanguageParser.java"/>
+    <delete file="${src}/${whilePath}/parser/WhileLanguageLexer.java"/>
+    <delete>
+      <fileset dir="." includes="**/*~"/>
+    </delete>
+  </target>
+
+</project>
