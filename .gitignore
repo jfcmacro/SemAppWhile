@@ -8,3 +8,4 @@ cabal-dev
 .virthualenv
 *~
 *.class
+src-java/co/edu/eafit/dis/semantics/whilelanguage/parser/
