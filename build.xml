@@ -27,7 +27,8 @@
 
   <target name="compile" depends="antlr"
 	  description="Compile source files">
-    <javac srcdir="${src}" destdir="${build}"/>
+    <javac includeantruntime="true"
+ srcdir="${src}" destdir="${build}"/>
   </target>
 
   <target name="runWhile" depends="compile">

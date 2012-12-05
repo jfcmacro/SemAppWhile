@@ -18,7 +18,7 @@ import Text.ParserCombinators.UU.BasicInstances
 -- All of them taken from the Text.ParserCombinators.UU.Demo
 
 pVarId  = (:) <$> pLower <*> pList pIdChar `micro` 1 <* spaces 
-pIdChar = pLower <|> pUpper <|> pDigit -- <|> pAnySym "='"
+pIdChar = pLower <|> pUpper <|> pDigit 
 
 
 pKey keyw = pToken keyw `micro` 1 <* spaces
@@ -27,10 +27,13 @@ spaces = pMunch (`elem` " \t\n")
 
 pEqual = pSym '=' `micro` 1 <* spaces
 
+pCEqual = pKey "==" `micro` 1 <* spaces
+pCLessT = pKey "<=" `micro` 1 <* spaces
+
 pInt :: Parser Int
 pInt = read <$> pList1 (pRange ('0','9')) `micro` 1 <* spaces
 
-pAndSym = pSym '&' `micro` 1 <* spaces
+pAndSym = pKey "&&" `micro` 1 <* spaces
 -- All our parsers
 
 -- Statement Parser
@@ -42,14 +45,13 @@ pStm =  pChainr pOpSc pStm'
 
 pStm' :: Parser Stm
 pStm' = Assign <$> pVarId <*> (pEqual *> pAexp) 
-     <|> Skip   <$   pKey "skip"
+     <|> Skip   <$  pKey "skip"
      <|> If    <$> (pKey "if" *> pBexp ) 
                <*> (pKey "then" *> pStm) 
                <*> (pKey "else" *> pStm)
      <|> While <$> (pKey "while" *> pBexp)  
-               <*> (pLBrace *> pStm <* pRBrace)
-     <|> pParens pStm
-     -- <|> Assign <$> pVarId <*> (pEqual *> pAexp)
+               <*> (pKey "do" *> pStm)
+     <|> pBraces pStm
 
 -- Arithmetic expression parser
 pOpMul :: Parser (Aexp -> Aexp -> Aexp)
@@ -74,15 +76,21 @@ pAexp'' = ANum <$> pInt
 pOpAnd :: Parser (Bexp -> Bexp -> Bexp)
 pOpAnd = And <$ pAndSym
 
+pOpCmp :: Parser (Aexp -> Aexp -> Bexp)
+pOpCmp = Eqq <$ pCEqual
+      <|> Lqt <$ pCLessT
+
 pBexp :: Parser Bexp
-pBexp = pChainr pOpAnd pBexp'
+pBexp = pChainl pOpAnd pBexp'
 
 pBexp' :: Parser Bexp
-pBexp' = BTrue   <$  pKey "true"
+pBexp' =  Neg <$> (pSym '-' *> pBexp'')
+      <|> pBexp''
+
+pBexp'' :: Parser Bexp
+pBexp'' = BTrue   <$  pKey "true"
       <|> BFalse <$  pKey "false"
-      <|> Eqq    <$> pAexp <* pEqual  <*> pAexp
-      <|> Lqt    <$> pAexp <* pKey "<=" <*> pAexp
-      <|> Neg    <$> (pSym '-' *> pBexp)
-      <|> pParens pBexp
+      <|> pAexp <**> pOpCmp <*> pAexp
+      <|> pBrackets pBexp
 
 

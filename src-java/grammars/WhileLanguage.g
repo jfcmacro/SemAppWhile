@@ -1,40 +1,89 @@
 grammar WhileLanguage;
 
-whilelanguage 
-	:	 aexp EOF
-	;
-	
-aexp 	:	term (('+' | '-') term)*
+options {
+	k = 1;
+	language = Java;
+}
+
+tokens {
+	PLUS      = '+';
+	MINUS     = '-';
+	TIMES     = '*';
+	SEMICOLON = ';';
+	LPAREN    = '(';
+	RPAREN    = ')';
+    LCBRAKET  = '[';
+    RBRAKET   = ']';
+    LBRACE    = '{';
+    RBRACE    = '}';
+	EQUALS    = '=';
+	AND       = '&&' ;
+    CEQUALS   = '==';
+    CLET      = '<=';
+
+	// Keywords
+	IF        = 'if';
+	THEN      = 'then';
+	ELSE      = 'else';
+	TRUE      = 'true';
+	FALSE     = 'false';
+    WHILE     = 'while';
+    DO        = 'do';
+    SKIP      = 'skip';
+}
+
+whilelanguage :  stm EOF
+		;
+
+stm : satom (options {greedy=true;}: SEMICOLON stm)?
 	;
 
-term	:	fact ('*' fact)*
-	;
+satom : ID EQUALS aexp
+      | SKIP 
+      | IF  bexp  THEN stm ELSE stm
+      | WHILE bexp DO stm
+      | LBRACE stm RBRACE
+	  ;
 
-fact	:	INT
-	|	ID
-	|	'(' aexp ')'
-	;
-	
-bexp	:	atom ('&' atom)* EOF
-	;
+aexp : aterm (opsum aterm)*
+     ;
 
-atom	:	'true' 
-	|	'false'
-	|	INT (('+' | '-') term)* ('*' fact)* (('=' | '<=') aexp)
-	|	ID  (('+' | '-') term)* ('*' fact)* (('=' | '<=') aexp)
-	|	'-' bexp
-	|       '(' atom ')'
-	;
-	
-//	|	parens
-//	;
-	
-// parens	:	'(' parens ')'
-//	|	(INT|ID) (('+' | '-') term)* ('*' fact)*
-//	|       ('true' | 'false') ('&' atom)*
-//	|	'-' bexp
-//	;
-	
+opsum : PLUS
+      | MINUS
+      ;
+
+aterm  : afact (opmul afact)*
+       ;
+
+
+opmul : TIMES
+      ;
+
+afact : INT
+      | ID
+      | LPAREN aexp RPAREN
+      ;
+
+bexp : bterm (andop bterm)* 
+     ;
+
+andop : AND
+      ;
+
+bterm : MINUS batom
+      | batom
+      ;
+
+batom : TRUE
+      | FALSE
+      | aexp opcomp aexp
+      | LCBRAKET bexp RBRAKET
+      ;
+
+opcomp : CEQUALS
+       | CLET
+       ;
+
 ID  :	('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'0'..'9'|'_')*
     ;
 
@@ -47,4 +96,7 @@ WS  :   ( ' '
         | '\n'
         ) {$channel=HIDDEN;}
     ;
+
+END	:
+	;
 
