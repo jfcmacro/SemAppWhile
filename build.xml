@@ -10,8 +10,10 @@
 
   <property name="src"           location="src-java"/>
   <property name="build"         location="bin"/>
-  <property name="whilePath"     value="co/edu/eafit/dis/semantics/whilelanguage"/>
-  <property name="whilePackage"  value="co.edu.eafit.dis.semantics.whilelanguage"/>
+  <property name="whilePath"
+	    value="co/edu/eafit/dis/semantics/whilelanguage"/>
+  <property name="whilePackage"
+	    value="co.edu.eafit.dis.semantics.whilelanguage"/>
 
   <target name="init" >
     <tstamp/>
@@ -19,16 +21,18 @@
   </target>
 
   <target name="antlr" depends="init">
-    <antlr:ant-antlr3 xmlns:antlr="antlib:org/apache/tools/ant/antlr"
-		      verbose="true"
-		      outputdirectory="${src}/${whilePath}/parser"
-		      target="${src}/grammars/WhileLanguage.g"/>
+    <antlr:ant-antlr3
+	xmlns:antlr="antlib:org/apache/tools/ant/antlr"
+	verbose="true"
+	outputdirectory="${src}/${whilePath}/parser"
+	target="${src}/grammars/WhileLanguage.g"/>
   </target>
 
   <target name="compile" depends="antlr"
 	  description="Compile source files">
     <javac includeantruntime="true"
- srcdir="${src}" destdir="${build}"/>
+	   srcdir="${src}"
+	   destdir="${build}"/>
   </target>
 
   <target name="runWhile" depends="compile">

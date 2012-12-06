@@ -5,6 +5,7 @@ options {
 	language = Java;
 }
 
+
 tokens {
 	PLUS      = '+';
 	MINUS     = '-';
@@ -30,6 +31,20 @@ tokens {
     WHILE     = 'while';
     DO        = 'do';
     SKIP      = 'skip';
+}
+
+@lexer::header{
+package co.edu.eafit.dis.semantics.whilelanguage.parser;
+}
+
+@header{
+package co.edu.eafit.dis.semantics.whilelanguage.parser;
+}
+
+@rulecatch {
+catch (RecognitionException e ) {
+    throw e;
+}
 }
 
 whilelanguage :  stm EOF
