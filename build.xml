@@ -25,7 +25,13 @@
 	xmlns:antlr="antlib:org/apache/tools/ant/antlr"
 	verbose="true"
 	outputdirectory="${src}/${whilePath}/parser"
-	target="${src}/grammars/WhileLanguage.g"/>
+	target="${src}/grammars/WhileLanguageLexer.g"/>
+    <antlr:ant-antlr3
+    	xmlns:antlr="antlib:org/apache/tools/ant/antlr"
+    	verbose="true"
+    	outputdirectory="${src}/${whilePath}/parser"
+    	libdirectory="${src}/${whilePath}/parser"
+    	target="${src}/grammars/WhileLanguage.g"/>
   </target>
 
   <target name="compile" depends="antlr"
@@ -48,6 +54,7 @@
     <delete dir="${build}"/>
     <delete file="${src}/${whilePath}/parser/WhileLanguageParser.java"/>
     <delete file="${src}/${whilePath}/parser/WhileLanguageLexer.java"/>
+    <delete file="${src}/${whilePath}/parser/WhileLanguage.tokens"/>
     <delete>
       <fileset dir="." includes="**/*~"/>
     </delete>

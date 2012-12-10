@@ -2,11 +2,10 @@ package co.edu.eafit.dis.semantics.whilelanguage.main;
 
 import co.edu.eafit.dis.semantics.whilelanguage.parser.WhileLanguageLexer;
 import co.edu.eafit.dis.semantics.whilelanguage.parser.WhileLanguageParser;
-import org.antlr.runtime.ANTLRInputStream;
+import org.antlr.runtime.ANTLRFileStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import java.io.IOException;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 public class Main {
@@ -25,9 +24,8 @@ public class Main {
 
 	try {
 
-	    FileInputStream fis = new FileInputStream(args[0]);
 	    WhileLanguageLexer wll = new
-		WhileLanguageLexer(new ANTLRInputStream(fis));
+		WhileLanguageLexer(new ANTLRFileStream(args[0]));
 	    CommonTokenStream tokens = new CommonTokenStream(wll);
 	    WhileLanguageParser parser = new WhileLanguageParser(tokens);
 	    parser.whilelanguage();
