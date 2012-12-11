@@ -1,4 +1,4 @@
-parser grammar WhileLanguage;
+parser grammar WhileLanguageParser;
 
 options {
     tokenVocab=WhileLanguageLexer;
@@ -8,10 +8,17 @@ options {
     ASTLabelType=CommonTree;
 }
 
+tokens {
+    NEG;
+    ASSIGN;
+    SEQ;
+    PROG;
+}
 
 @header{
 package co.edu.eafit.dis.semantics.whilelanguage.parser;
 }
+
 
 @rulecatch {
    catch (RecognitionException e ) {
@@ -19,55 +26,71 @@ package co.edu.eafit.dis.semantics.whilelanguage.parser;
    }
 }
 
-whilelanguage :  stm EOF
-		;
+whilelanguage 
+    :  stm EOF -> ^(PROG stm)
+    ;
 
-stm : satom (options {greedy=true;}: SEMICOLON stm)?
+stm : LBRACE! block RBRACE!
+    | satom
 	;
 
-satom : ID EQUALS aexp
-      | SKIP
-      | IF  bexp  THEN stm ELSE stm
-      | WHILE bexp DO stm
-      | LBRACE stm RBRACE
-	  ;
+block
+    : satom (SEMICOLON^ block)?
+    ;
 
-aexp : aterm (opsum aterm)*
-     ;
+satom 
+    : ID EQUALS aexp -> ^(ASSIGN ID aexp)
+    | SKIP^
+    | IF^  bexp  THEN! stm ELSE! stm 
+    | WHILE^ bexp DO! stm 
+    ;
 
-opsum : PLUS
-      | MINUS
-      ;
+aexp 
+    : aterm (opsum^ aterm)*
+    ;
 
-aterm  : afact (opmul afact)*
-       ;
+opsum 
+    : PLUS
+    | MINUS
+    ;
+
+aterm
+    : afact (opmul^ afact)*
+    ;
 
 
-opmul : TIMES
-      ;
+opmul 
+    : TIMES
+    ;
 
-afact : INT
-      | ID
-      | LPAREN aexp RPAREN
-      ;
+afact
+    : INT
+    | ID
+    | LPAREN! aexp RPAREN!
+    ;
 
-bexp : bterm (andop bterm)*
-     ;
+bexp
+    : bterm (andop^ bterm)*
+    ;
 
-andop : AND
-      ;
+andop
+    : AND
+    ;
 
-bterm : MINUS batom
-      | batom
-      ;
+bterm
+    : MINUS batom -> ^(NEG batom)
+    | batom
+    ;
 
-batom : TRUE
-      | FALSE
-      | aexp opcomp aexp
-      | LCBRAKET! bexp RBRAKET!
-      ;
+batom
+    : TRUE
+    | FALSE
+    | aexp opcomp^ aexp
+    | LCBRAKET! bexp RBRAKET!
+    ;
 
-opcomp : CEQUALS
-       | CLET
-       ;
+opcomp
+    : CEQUALS
+    | CLET
+    ;
 

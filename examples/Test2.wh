@@ -1,5 +1,14 @@
+{
 a = a - 10;
-if a <= 100 
-then a = a + 10
-else a = a - 10;
-a = a + b
+if a <= 100
+   then {
+      a = a + 10;
+      y = 20
+   }
+   else {
+      a = a - 10;
+      y = 20
+   };
+a = 0;
+a = (a + b) * y
+}

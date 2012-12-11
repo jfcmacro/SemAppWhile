@@ -19,10 +19,10 @@ LCBRAKET  : '[';
 RBRAKET   : ']';
 LBRACE    : '{';
 RBRACE    : '}';
-EQUALS    : ':';
+EQUALS    : '=';
 AND       : '&&' ;
-CEQUALS   : '::';
-CLET      : '<:';
+CEQUALS   : '==';
+CLET      : '<=';
 IF        : 'if';
 THEN      : 'then';
 ELSE      : 'else';
@@ -39,6 +39,3 @@ WS  :   ( ' '
         | '\n'
         ) {$channel=HIDDEN;}
     ;
-END	:
-	;
-

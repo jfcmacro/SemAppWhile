@@ -23,7 +23,5 @@ processFile f = do
 
 main :: IO ()
 main = do
-  putStrLn "Prueba pAexp"
-  test "12343 + 2113"
   files <- getArgs
   forM_ files processFile

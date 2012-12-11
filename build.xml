@@ -31,7 +31,13 @@
     	verbose="true"
     	outputdirectory="${src}/${whilePath}/parser"
     	libdirectory="${src}/${whilePath}/parser"
-    	target="${src}/grammars/WhileLanguage.g"/>
+    	target="${src}/grammars/WhileLanguageParser.g"/>
+    <antlr:ant-antlr3
+    	xmlns:antlr="antlib:org/apache/tools/ant/antlr"
+    	verbose="true"
+    	outputdirectory="${src}/${whilePath}/walker"
+    	libdirectory="${src}/${whilePath}/parser"
+    	target="${src}/grammars/FreeVars.g"/>
   </target>
 
   <target name="compile" depends="antlr"

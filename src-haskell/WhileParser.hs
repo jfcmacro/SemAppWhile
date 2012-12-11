@@ -1,10 +1,12 @@
-{-# LANGUAGE FlexibleContexts,
-             TypeSynonymInstances,
-             MultiParamTypeClasses,
-             Rank2Types, 
-             FlexibleContexts, 
-             NoMonomorphismRestriction,
-              CPP  #-}
+{-#
+  LANGUAGE FlexibleContexts,
+  TypeSynonymInstances,
+  MultiParamTypeClasses,
+  Rank2Types,
+  FlexibleContexts,
+  NoMonomorphismRestriction,
+  CPP
+  #-}
 
 module WhileParser(pStm,pAexp,pBexp) where
 
@@ -17,8 +19,8 @@ import Text.ParserCombinators.UU.BasicInstances
 -- Helper parsers
 -- All of them taken from the Text.ParserCombinators.UU.Demo
 
-pVarId  = (:) <$> pLower <*> pList pIdChar `micro` 1 <* spaces 
-pIdChar = pLower <|> pUpper <|> pDigit 
+pVarId  = (:) <$> pLower <*> pList pIdChar `micro` 1 <* spaces
+pIdChar = pLower <|> pUpper <|> pDigit
 
 
 pKey keyw = pToken keyw `micro` 1 <* spaces
@@ -41,17 +43,20 @@ pOpSc :: Parser (Stm -> Stm -> Stm)
 pOpSc = SSeq <$ pSym ';' `micro` 1 <* spaces
 
 pStm :: Parser Stm
-pStm =  pChainr pOpSc pStm'
+pStm =  pStm'
+    <|> pBraces pBlock
+
+pBlock :: Parser Stm
+pBlock = pChainr pOpSc pStm'
 
 pStm' :: Parser Stm
-pStm' = Assign <$> pVarId <*> (pEqual *> pAexp) 
+pStm' = Assign <$> pVarId <*> (pEqual *> pAexp)
      <|> Skip   <$  pKey "skip"
-     <|> If    <$> (pKey "if" *> pBexp ) 
-               <*> (pKey "then" *> pStm) 
+     <|> If    <$> (pKey "if" *> pBexp )
+               <*> (pKey "then" *> pStm)
                <*> (pKey "else" *> pStm)
-     <|> While <$> (pKey "while" *> pBexp)  
+     <|> While <$> (pKey "while" *> pBexp)
                <*> (pKey "do" *> pStm)
-     <|> pBraces pStm
 
 -- Arithmetic expression parser
 pOpMul :: Parser (Aexp -> Aexp -> Aexp)
@@ -70,7 +75,7 @@ pAexp' =  pChainr pOpMul pAexp''
 pAexp'' :: Parser Aexp
 pAexp'' = ANum <$> pInt
        <|> AVar <$> pVarId
-       <|> pParens pAexp  
+       <|> pParens pAexp
 
 -- Boolean expresion parser
 pOpAnd :: Parser (Bexp -> Bexp -> Bexp)
